@@ -2,6 +2,8 @@ import bpy
 
 from operator import itemgetter
 
+from ..misc_functions import return_playing_function
+
 # set in point
 class BlenderEditSetStart(bpy.types.Operator):
     bl_idname = "blenderedit.set_start"
@@ -275,34 +277,23 @@ class BlenderEditSelectPlayingMenu(bpy.types.Operator):
 def SelectPlayingFunction(all):
     scn=bpy.context.scene
     cf=scn.frame_current
-    playing=[]
-    channel=[]
-    active=0
+    active=''
     for s in scn.sequence_editor.sequences_all:
         s.select=False
         s.select_left_handle=False
         s.select_right_handle=False
-        if s.frame_final_start<=cf and s.frame_final_end > cf:
-            if all==True:
-                playing.append(s)
-                channel.append(s.channel)
-            else:
-                if s.mute==False:
-                    playing.append(s)
-                    channel.append(s.channel)
+    playing=return_playing_function()
     if len(playing)!=0:
         for s in playing:
-            maximum=max(channel)
-            if s.channel==maximum:
+            if s.mute==False and active=='':
                 active=s
             if all==True:
                 s.select=True
             else:
-                if active!=0:
+                if active!='':
                     active.select=True
-        if active!=0:
+        if active!='':
             scn.sequence_editor.active_strip=active
-                
     return {"FINISHED"}
 
 # cut all

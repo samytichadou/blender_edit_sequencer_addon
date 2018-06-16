@@ -6,11 +6,32 @@ class BlenderEditFooterMenu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("blenderedit.set_scene_format")
-        layout.operator("blenderedit.export_sequence")
+        layout.menu('view3d.blender_edit_settings_menu', text='Settings')
+        layout.menu('view3d.blender_edit_strips_menu', text='Strips')
         layout.menu('view3d.blender_edit_timeline_menu', text='Timeline')
         layout.menu('view3d.blender_edit_playback_menu', text='Playback')
         layout.menu('view3d.blender_edit_misc_menu', text='Misc')
+        
+class BlenderEditSettingsMenu(bpy.types.Menu):
+    bl_idname = "view3d.blender_edit_settings_menu"
+    bl_label = "Blender Settings Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("blenderedit.set_scene_format")
+        layout.operator("blenderedit.export_sequence")
+        layout.operator("blenderedit.set_channels")
+        layout.operator("blenderedit.setup_ui")
+        
+class BlenderEditStripsMenu(bpy.types.Menu):
+    bl_idname = "view3d.blender_edit_strips_menu"
+    bl_label = "Blender Strips Menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("blenderedit.set_strip_color")
+        layout.operator("blenderedit.select_by_color")
+        layout.operator("blenderedit.add_strip_marker_menu")
         
 class BlenderEditTimelineMenu(bpy.types.Menu):
     bl_idname = "view3d.blender_edit_timeline_menu"

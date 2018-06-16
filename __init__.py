@@ -42,11 +42,15 @@ importlib.reload(developer_utils)
 modules = developer_utils.setup_addon_modules(__path__, __name__, "bpy" in locals())
 
 from .gui import blenderedit_menu_draw
+from .extra_ui import BleditSequencerUI
+from .properties import BlenderEditSceneProperties
 
 # register
 ##################################
 
 import traceback
+
+widgets = {}
 
 def register():
     try: bpy.utils.register_module(__name__)
@@ -54,8 +58,26 @@ def register():
 
     print("Registered {} with {} modules".format(bl_info["name"], len(modules)))
     
+    widgets["SequencerUI"] = BleditSequencerUI()
+    
     bpy.types.SEQUENCER_HT_header.append(blenderedit_menu_draw)
-
+    
+    bpy.types.Scene.blender_edit_scene_properties = \
+        bpy.props.CollectionProperty(type=BlenderEditSceneProperties)
+        
+    bpy.types.Scene.blender_edit_ui_glob_offsetX = bpy.props.IntProperty(name="Global Offset", min=-100)
+    bpy.types.Scene.blender_edit_ui_offsetX = bpy.props.IntProperty(name="Offset", min=-100, max=100)
+    bpy.types.Scene.blender_edit_ui_fontsize = bpy.props.IntProperty(name="Font Size", default=12, min=1, max=30)
+    bpy.types.Scene.blender_edit_ui_channel_fill_alpha = bpy.props.BoolProperty(name="Channel Fill Toggle", default=True)
+    bpy.types.Scene.blender_edit_ui_channel_fill_alpha_value = bpy.props.FloatProperty(name="Channel Fill Value", default=0.5, min=0, max=1)
+    bpy.types.Scene.blender_edit_ui_main_alpha = bpy.props.FloatProperty(name="Main UI Background", default=0.9, min=0, max=1)
+    bpy.types.Scene.blender_edit_ui_channel_strip_color_onoff = bpy.props.BoolProperty(name="Strip Color Toggle", default=True)
+    bpy.types.Scene.blender_edit_ui_strip_color_alpha_value = bpy.props.FloatProperty(name="Strip Color Alpha Value", default=1, min=0, max=1)
+    bpy.types.Scene.blender_edit_ui_strip_marker_onoff = bpy.props.BoolProperty(name="Show Strip Markers", default=True)
+    bpy.types.Scene.blender_edit_ui_strip_marker_show_hidden = bpy.props.BoolProperty(name="Show Hidden Strip Markers", default=False)
+    bpy.types.Scene.blender_edit_ui_strip_marker_alpha_value = bpy.props.FloatProperty(name="Markers Alpha Value", default=1, min=0, max=1)
+    bpy.types.Scene.blender_edit_ui_strip_marker_color = bpy.props.FloatVectorProperty(name="Markers Color", min=0.0, max=1.0, default=[1, 1, 1], subtype='COLOR')
+    
 def unregister():
     try: bpy.utils.unregister_module(__name__)
     except: traceback.print_exc()
@@ -63,3 +85,19 @@ def unregister():
     print("Unregistered {}".format(bl_info["name"]))
     
     bpy.types.SEQUENCER_HT_header.remove(blenderedit_menu_draw)
+    
+    for key, dc in widgets.items():
+        dc.remove_handle()
+        
+    del bpy.types.Scene.blender_edit_scene_properties
+    del bpy.types.Scene.blender_edit_ui_glob_offsetX
+    del bpy.types.Scene.blender_edit_ui_offsetX
+    del bpy.types.Scene.blender_edit_ui_fontsize
+    del bpy.types.Scene.blender_edit_ui_channel_fill_alpha
+    del bpy.types.Scene.blender_edit_ui_channel_fill_alpha_value
+    del bpy.types.Scene.blender_edit_ui_main_alpha
+    del bpy.types.Scene.blender_edit_ui_channel_strip_color_onoff
+    del bpy.types.Scene.blender_edit_ui_strip_color_alpha_value
+    del bpy.types.Scene.blender_edit_ui_strip_marker_onoff
+    del bpy.types.Scene.blender_edit_ui_strip_marker_show_hidden
+    del bpy.types.Scene.blender_edit_ui_strip_marker_color
