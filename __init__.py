@@ -22,7 +22,7 @@ bl_info = {
     "name": "Blender Edit 2 alpha",
     "description": "",
     "author": "Samy Tichadou (tonton)",
-    "version": (0, 0, 1),
+    "version": (0, 2, 2),
     "blender": (2, 79, 0),
     "location": "Sequencer",
     "warning": "This addon is still in development.",
