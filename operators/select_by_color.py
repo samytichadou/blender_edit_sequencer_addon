@@ -15,7 +15,7 @@ class BlenderEditSelectByColor(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return True
+        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor
     
     def invoke(self, context, event):
         wm = context.window_manager

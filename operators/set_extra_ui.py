@@ -33,6 +33,8 @@ class BlenderEditSetupUI(bpy.types.Operator):
         col.prop(scn, "blender_edit_ui_strip_marker_show_hidden")
         col.prop(scn, "blender_edit_ui_strip_marker_color")
         col.prop(scn, "blender_edit_ui_strip_marker_alpha_value")
+        col.prop(scn, "blender_edit_ui_marker_name")
+        col.prop(scn, "blender_edit_ui_marker_fontsize")
         
     def execute(self, context):
         return {"FINISHED"}

@@ -1,15 +1,20 @@
 import bpy
+import os
 
 from operator import itemgetter
 
-from ..misc_functions import return_playing_function
+from ..misc_functions import return_playing_function, return_name_from_strip
+from ..preferences import get_addon_preferences
+from ..json_function import read_json
 
 # set in point
 class BlenderEditSetStart(bpy.types.Operator):
-    bl_idname = "blenderedit.set_start"
-    bl_label = "Set Start"
+    bl_idname = "blenderedit.set_start_end"
+    bl_label = "Set Start-End"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
+
+    end=bpy.props.BoolProperty(default=False)
 
     @classmethod
     def poll(cls, context):
@@ -18,28 +23,15 @@ class BlenderEditSetStart(bpy.types.Operator):
     def execute(self, context):
         scn=bpy.context.scene
         if bpy.context.scene.use_preview_range == False:
-            scn.frame_start = scn.frame_current
+            if self.end==False:
+                scn.frame_start = scn.frame_current
+            else:
+                scn.frame_end = scn.frame_current-1
         else:
-            scn.frame_preview_start = scn.frame_current
-        return {"FINISHED"}
-
-# set out point
-class BlenderEditSetEnd(bpy.types.Operator):
-    bl_idname = "blenderedit.set_end"
-    bl_label = "Set End"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
-
-    @classmethod
-    def poll(cls, context):
-        return True
-
-    def execute(self, context):
-        scn=bpy.context.scene
-        if bpy.context.scene.use_preview_range == False:
-            scn.frame_end = scn.frame_current
-        else:
-            scn.frame_preview_end = scn.frame_current
+            if self.end==False:
+                scn.frame_preview_start = scn.frame_current
+            else:
+                scn.frame_preview_end = scn.frame_current-1
         return {"FINISHED"}
     
 # move selected
@@ -163,38 +155,6 @@ class BlenderEditSelectHandles(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None
-
-    def execute(self, context):
-        if self.right==True:
-            bpy.ops.sequencer.strip_jump(next=True, center=False)
-        else:
-            bpy.ops.sequencer.strip_jump(next=False, center=False)
-        SelectHandlesFunction(self.right)
-        return {"FINISHED"}
-    
-# select handles Menu
-class BlenderEditSelectHandlesMenu(bpy.types.Operator):
-    bl_idname = "blenderedit.select_handles_menu"
-    bl_label = "Select Handles Menu"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
-    
-    right=bpy.props.BoolProperty()
-    
-    @classmethod
-    def poll(cls, context):
-        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None
-    
-    def invoke(self, context, event):
-        wm = context.window_manager
-        return wm.invoke_props_dialog(self, width=300, height=100)
-    
-    def check(self, context):
-        return True
-    
-    def draw(self, context):
-        layout = self.layout
-        layout.prop(self, 'right')
 
     def execute(self, context):
         if self.right==True:
@@ -399,34 +359,6 @@ class BlenderEditSelectLeftRight(bpy.types.Operator):
         SelectLeftRightFunction(self.right)
         return {"FINISHED"}
     
-# select left right menu
-class BlenderEditSelectLeftRightMenu(bpy.types.Operator):
-    bl_idname = "blenderedit.select_left_right_menu"
-    bl_label = "Select Left Right Menu"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
-    
-    right=bpy.props.BoolProperty()
-
-    @classmethod
-    def poll(cls, context):
-        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None
-    
-    def invoke(self, context, event):
-        wm = context.window_manager
-        return wm.invoke_props_dialog(self, width=300, height=100)
-    
-    def check(self, context):
-        return True
-    
-    def draw(self, context):
-        layout = self.layout
-        layout.prop(self, 'right')
-
-    def execute(self, context):
-        SelectLeftRightFunction(self.right)
-        return {"FINISHED"}
-    
 # select left right function
 def SelectLeftRightFunction(right):
     scn=bpy.context.scene
@@ -464,35 +396,8 @@ class BlenderEditGoToInOut(bpy.types.Operator):
         GoToInOutFunction(self.out)
         return {"FINISHED"}
     
-# go to in out menu
-class BlenderEditGoToInOutMenu(bpy.types.Operator):
-    bl_idname = "blenderedit.go_to_in_out_menu"
-    bl_label = "Go to Strip In Out Menu"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
     
-    out=bpy.props.BoolProperty()
-
-    @classmethod
-    def poll(cls, context):
-        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None
-    
-    def invoke(self, context, event):
-        wm = context.window_manager
-        return wm.invoke_props_dialog(self, width=300, height=100)
-    
-    def check(self, context):
-        return True
-    
-    def draw(self, context):
-        layout = self.layout
-        layout.prop(self, 'out')
-
-    def execute(self, context):
-        GoToInOutFunction(self.out)
-        return {"FINISHED"}
-    
-# select left right function
+# go to in out function
 def GoToInOutFunction(out):
     scn=bpy.context.scene
     cf=scn.frame_current
@@ -507,3 +412,51 @@ def GoToInOutFunction(out):
             scn.frame_current=max(selected,key=itemgetter(1))[1]
                                 
     return {"FINISHED"}
+
+# jump to next marker
+class BlenderEditGoToMarkers(bpy.types.Operator):
+    bl_idname = "blenderedit.go_to_markers"
+    bl_label = "Go to Markers"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+    
+    next=bpy.props.BoolProperty()
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None
+
+    def execute(self, context):
+        prefs=get_addon_preferences()
+        database=prefs.data_base_folder
+        scn=bpy.context.scene
+        hidden=scn.blender_edit_ui_strip_marker_show_hidden
+        cf=scn.frame_current
+        list=[]
+        for s in scn.sequence_editor.sequences_all:
+            name=return_name_from_strip(s)
+            path=os.path.join(database, name.replace('.', '___')+".json")
+            if os.path.isfile(path)==True:
+                data=read_json(path)
+                for m in data['markers']:
+                    fr=m['frame']+s.frame_start
+                    if self.next==False and fr<cf:
+                        if hidden==True:
+                            list.append(fr)
+                        elif hidden==False and fr>=s.frame_final_start and fr<=s.frame_final_end:
+                            list.append(fr)
+                    elif self.next==True and m['frame']+s.frame_start>cf:
+                        if hidden==True:
+                            list.append(fr)
+                        elif hidden==False and fr>=s.frame_final_start and fr<=s.frame_final_end:
+                            list.append(fr)
+        if len(list)!=0 and self.next==True:
+            list=sorted(list)
+            scn.frame_current=list[0]
+        elif len(list)!=0 and self.next==False:
+            list=sorted(list, reverse=True)
+            scn.frame_current=list[0]
+        else:
+            self.report({'INFO'}, "No More Strip Markers in this Direction")
+        
+        return {"FINISHED"}

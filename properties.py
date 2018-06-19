@@ -10,5 +10,11 @@ class ChannelProperties(bpy.types.PropertyGroup):
 class ChannelList(bpy.types.PropertyGroup):
     channelprops=props.CollectionProperty(type=ChannelProperties)
     
+class TempComment(bpy.types.PropertyGroup):
+    frame=props.IntProperty()
+    to_clear=props.BoolProperty(default=False)
+    author=props.StringProperty()
+    
 class BlenderEditSceneProperties(bpy.types.PropertyGroup):
     channellist=props.CollectionProperty(type=ChannelList)
+    tempcomment=props.CollectionProperty(type=TempComment)

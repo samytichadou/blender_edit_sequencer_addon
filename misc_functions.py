@@ -1,20 +1,23 @@
 import bpy
+import os
 
 from .preferences import get_addon_preferences
 
 #create scene prop
 def create_scene_prop():
     try:
-        bpy.context.scene.blender_edit_scene_properties[0]
+        props=bpy.context.scene.blender_edit_scene_properties[0]
     except IndexError:
-        bpy.context.scene.blender_edit_scene_properties.add()
+        props=bpy.context.scene.blender_edit_scene_properties.add()
+    return props
 
 #create channel list
 def create_channel_list():
     try:
-        bpy.context.scene.blender_edit_scene_properties[0].channellist[0]
+        props=bpy.context.scene.blender_edit_scene_properties[0].channellist[0]
     except IndexError:
-        bpy.context.scene.blender_edit_scene_properties[0].channellist.add()
+        props=bpy.context.scene.blender_edit_scene_properties[0].channellist.add()
+    
 
 #create channels props
 def create_channel_props():
@@ -69,3 +72,22 @@ def return_playing_function():
             if s.frame_final_start<=cf and s.frame_final_end > cf and s.channel==i:
                 playing.append(s)
     return playing
+
+# return name from strip
+def return_name_from_strip(strip):
+    if strip.type=='MOVIE':
+        fp=strip.filepath
+        name=os.path.basename(absolute_path(fp))
+    elif strip.type=='IMAGE':
+        name=strip.elements[0].filename
+    elif strip.type=='SOUND':
+        fp=strip.sound.filepath
+        name=os.path.basename(absolute_path(fp))
+    else:
+        name=''
+    return name
+
+#get absolute path
+def absolute_path(path):
+    npath=os.path.abspath(bpy.path.abspath(path))
+    return npath

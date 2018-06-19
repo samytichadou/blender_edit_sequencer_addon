@@ -31,7 +31,12 @@ class BlenderEditStripsMenu(bpy.types.Menu):
         layout = self.layout
         layout.operator("blenderedit.set_strip_color")
         layout.operator("blenderedit.select_by_color")
+        layout.separator()
         layout.operator("blenderedit.add_strip_marker_menu")
+        layout.operator("blenderedit.modify_strip_marker_menu")
+        layout.separator()
+        layout.operator("blenderedit.save_proxys")
+        layout.operator("blenderedit.load_proxys")
         
 class BlenderEditTimelineMenu(bpy.types.Menu):
     bl_idname = "view3d.blender_edit_timeline_menu"
@@ -39,8 +44,8 @@ class BlenderEditTimelineMenu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("blenderedit.set_start")
-        layout.operator("blenderedit.set_end")
+        layout.operator("blenderedit.set_start_end", text='Set Start').end=False
+        layout.operator("blenderedit.set_start_end", text='Set End').end=True
         layout.separator()
         ffw=layout.operator("blenderedit.move_clips", text='Move Clips 1 frame forward')
         ffw.forward=True
@@ -70,13 +75,22 @@ class BlenderEditTimelineMenu(bpy.types.Menu):
         layout.separator()
         layout.operator("blenderedit.select_channel_menu")
         layout.separator()
-        layout.operator("blenderedit.select_handles_menu")
         layout.operator("blenderedit.select_playing_menu")
-        layout.operator("blenderedit.select_left_right_menu")
+        layout.separator()
+        layout.operator("blenderedit.select_handles", text="Select Handles Left").right=False
+        layout.operator("blenderedit.select_handles", text="Select Handles Right").right=True
+        layout.separator()
+        layout.operator("blenderedit.select_left_right", text="Select Left").right=False
+        layout.operator("blenderedit.select_left_right", text="Select Right").right=True
         layout.separator()
         layout.operator("blenderedit.cut_all_menu")
         layout.separator()
-        layout.operator("blenderedit.go_to_in_out_menu")
+        layout.operator("blenderedit.go_to_in_out", text='Go to In').out=False
+        layout.operator("blenderedit.go_to_in_out", text='Go to Out').out=True
+        layout.separator()
+        layout.operator("blenderedit.go_to_markers", text='Go to Previous Strip Marker').next=False
+        layout.operator("blenderedit.go_to_markers", text='Go to Next Strip Marker').next=True
+
         
 class BlenderEditPlaybackMenu(bpy.types.Menu):
     bl_idname = "view3d.blender_edit_playback_menu"

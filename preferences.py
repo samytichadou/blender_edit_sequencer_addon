@@ -19,9 +19,11 @@ class BlenderEditPreferences(bpy.types.AddonPreferences):
     scolor10 = bpy.props.FloatVectorProperty(min=0.0, max=1.0, default=[0.450786, 0.62396, 1], subtype='COLOR')
     scolor11 = bpy.props.FloatVectorProperty(min=0.0, max=1.0, default=[1, 0.879623, 0.53948], subtype='COLOR')
     scolor12 = bpy.props.FloatVectorProperty(min=0.0, max=1.0, default=[1, 1, 1], subtype='COLOR')
+    data_base_folder = bpy.props.StringProperty(subtype="DIR_PATH", default=os.path.join(bpy.utils.user_resource('CONFIG'), "blender_edit_database"))
 
     def draw(self, context):
         layout=self.layout
+        layout.prop(self, "data_base_folder")
         box=layout.box()
         box.label("Strip Colors")
         split=box.split()

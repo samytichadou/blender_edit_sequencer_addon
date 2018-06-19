@@ -22,7 +22,7 @@ bl_info = {
     "name": "Blender Edit 2 alpha",
     "description": "",
     "author": "Samy Tichadou (tonton)",
-    "version": (0, 2, 2),
+    "version": (0, 2, 3),
     "blender": (2, 79, 0),
     "location": "Sequencer",
     "warning": "This addon is still in development.",
@@ -58,7 +58,7 @@ def register():
 
     print("Registered {} with {} modules".format(bl_info["name"], len(modules)))
     
-    widgets["SequencerUI"] = BleditSequencerUI()
+    widgets["SequencerUI2"] = BleditSequencerUI()
     
     bpy.types.SEQUENCER_HT_header.append(blenderedit_menu_draw)
     
@@ -77,6 +77,9 @@ def register():
     bpy.types.Scene.blender_edit_ui_strip_marker_show_hidden = bpy.props.BoolProperty(name="Show Hidden Strip Markers", default=False)
     bpy.types.Scene.blender_edit_ui_strip_marker_alpha_value = bpy.props.FloatProperty(name="Markers Alpha Value", default=1, min=0, max=1)
     bpy.types.Scene.blender_edit_ui_strip_marker_color = bpy.props.FloatVectorProperty(name="Markers Color", min=0.0, max=1.0, default=[1, 1, 1], subtype='COLOR')
+    bpy.types.Scene.blender_edit_ui_marker_name = bpy.props.BoolProperty(name="Show Markers Name", default=True)
+    bpy.types.Scene.blender_edit_ui_marker_fontsize = bpy.props.IntProperty(name="Font Size", default=12, min=1, max=30)
+    bpy.types.Scene.blender_edit_ui_ismarker = bpy.props.BoolProperty(default=False)
     
 def unregister():
     try: bpy.utils.unregister_module(__name__)
@@ -101,3 +104,6 @@ def unregister():
     del bpy.types.Scene.blender_edit_ui_strip_marker_onoff
     del bpy.types.Scene.blender_edit_ui_strip_marker_show_hidden
     del bpy.types.Scene.blender_edit_ui_strip_marker_color
+    del bpy.types.Scene.blender_edit_ui_marker_name
+    del bpy.types.Scene.blender_edit_ui_marker_fontsize
+    del bpy.types.Scene.blender_edit_ui_ismarker
