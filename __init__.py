@@ -22,7 +22,7 @@ bl_info = {
     "name": "Blender Edit 2 alpha",
     "description": "",
     "author": "Samy Tichadou (tonton)",
-    "version": (0, 2, 3),
+    "version": (0, 2, 4),
     "blender": (2, 79, 0),
     "location": "Sequencer",
     "warning": "This addon is still in development.",
@@ -80,6 +80,16 @@ def register():
     bpy.types.Scene.blender_edit_ui_marker_name = bpy.props.BoolProperty(name="Show Markers Name", default=True)
     bpy.types.Scene.blender_edit_ui_marker_fontsize = bpy.props.IntProperty(name="Font Size", default=12, min=1, max=30)
     bpy.types.Scene.blender_edit_ui_ismarker = bpy.props.BoolProperty(default=False)
+    bpy.types.Scene.blender_edit_multithread_temp_dir = bpy.props.StringProperty()
+    bpy.types.Scene.blender_edit_multithread_prerender_dir = bpy.props.StringProperty()
+    bpy.types.Scene.blender_edit_multithread_sound_dir = bpy.props.StringProperty()
+    bpy.types.Scene.blender_edit_multithread_clear_temp = bpy.props.BoolProperty()
+    bpy.types.Scene.blender_edit_multithread_lgt = bpy.props.IntProperty()
+    bpy.types.Scene.blender_edit_is_rendering = bpy.props.BoolProperty(default=False)
+    bpy.types.Scene.blender_edit_multithread_is_ffmpeg = bpy.props.BoolProperty(default=False)
+    bpy.types.Scene.blender_edit_multithread_proc = bpy.props.StringProperty()
+    bpy.types.Scene.blender_edit_multithread_audio = bpy.props.BoolProperty()
+    bpy.types.Scene.blender_edit_multithread_framerate = bpy.props.IntProperty()
     
 def unregister():
     try: bpy.utils.unregister_module(__name__)
@@ -107,3 +117,13 @@ def unregister():
     del bpy.types.Scene.blender_edit_ui_marker_name
     del bpy.types.Scene.blender_edit_ui_marker_fontsize
     del bpy.types.Scene.blender_edit_ui_ismarker
+    del bpy.types.Scene.blender_edit_multithread_temp_dir
+    del bpy.types.Scene.blender_edit_multithread_prerender_dir
+    del bpy.types.Scene.blender_edit_multithread_sound_dir
+    del bpy.types.Scene.blender_edit_multithread_clear_temp
+    del bpy.types.Scene.blender_edit_multithread_lgt
+    del bpy.types.Scene.blender_edit_is_rendering
+    del bpy.types.Scene.blender_edit_multithread_is_ffmpeg
+    del bpy.types.Scene.blender_edit_multithread_proc
+    del bpy.types.Scene.blender_edit_multithread_audio
+    del bpy.types.Scene.blender_edit_multithread_framerate
