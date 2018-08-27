@@ -1,8 +1,8 @@
 import bpy
 import subprocess
 
-from ...preferences import get_addon_preferences
-from ...misc_functions import absolute_path
+from ..preferences import get_addon_preferences
+from ..misc_functions import absolute_path
 
 class BlenderEditPrintFFMpegFormats(bpy.types.Operator):
     bl_idname = "blenderedit.print_ffmpeg_formats"
