@@ -12,7 +12,6 @@ def kill_subprocess(processes):
     for p in processes.split('___'):
         if p!='':
             os.kill(int(p), signal.SIGTERM)
-            
 
 #create temp dirs
 def create_temp_directories(filepath):

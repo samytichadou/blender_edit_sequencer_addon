@@ -7,7 +7,7 @@ import shlex
 
 from ...preferences import get_addon_preferences
 
-def multithread_rendering(filepath, free_core, clear_temp, temp_dir, instance_dir, prerender_dir, sound_dir):
+def multithread_rendering(filepath, free_core, keep_temp, temp_dir, instance_dir, prerender_dir, sound_dir):
     scn=bpy.context.scene
     
     processes=''
@@ -72,5 +72,10 @@ def multithread_rendering(filepath, free_core, clear_temp, temp_dir, instance_di
         processes+=str(p.pid)+"___"
         
     bpy.ops.wm.open_mainfile(filepath=o_blend)
+    
+    if keep_temp==1:
+        clear_temp=0
+    else:
+        clear_temp=1
     
     return(clear_temp, lgt, processes)

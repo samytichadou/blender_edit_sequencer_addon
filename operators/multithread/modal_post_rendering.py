@@ -38,6 +38,18 @@ class BlenderEditPostRenderingActionsCheck(bpy.types.Operator):
         self.report({'INFO'}, "Render Canceled")
         wm = context.window_manager
         wm.event_timer_remove(self._timer)
+        #kill ffmpeg process
 
     def finish(self, context):
-        self.report({'INFO'}, "Render Finished")
+        #launch cleaning if needed
+        if bpy.context.scene.blender_edit_multithread_clear_temp==True:
+            time.sleep(1)
+            try:
+                shutil.rmtree(bpy.context.scene.blender_edit_multithread_temp_dir)
+                self.report({'INFO'}, "Render Finished")
+            except:
+                self.report({'WARNING'}, "Error Cleaning Temps")
+                
+        else:
+            self.report({'INFO'}, "Render Finished")
+                

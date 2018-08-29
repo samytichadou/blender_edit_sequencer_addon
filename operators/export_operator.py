@@ -19,7 +19,7 @@ class BlenderEditExportSequence(bpy.types.Operator, ExportHelper):
     filepath = bpy.props.StringProperty()
     
     regular=bpy.props.BoolProperty(name='Regular Render', default=False)
-    clear_temp=bpy.props.BoolProperty(name='Clear temporary files', default=True)
+    keep_temp=bpy.props.BoolProperty(name='Keep temporary files', default=False)
     free_core=bpy.props.IntProperty(name='Unused Cores', default=2, min=1)
     audio_export=bpy.props.BoolProperty(name='Export Audio Mixdown', default=False)
         
@@ -37,10 +37,9 @@ class BlenderEditExportSequence(bpy.types.Operator, ExportHelper):
         
         layout.prop(self, "regular")
         layout.prop(self, "free_core")
-        layout.prop(self, "clear_temp")
+        layout.prop(self, "keep_temp")
         if file_format!='FFMPEG' and self.regular==False:
             layout.prop(self, "audio_export")
-        layout.operator("blenderedit.print_ffmpeg_codecs")
         layout.operator("blenderedit.print_ffmpeg_formats")
         
         box=layout.box()
@@ -161,7 +160,7 @@ class BlenderEditExportSequence(bpy.types.Operator, ExportHelper):
                 create_audio_mixdown(self.filepath, sound_dir)
             
             #save temp for evolution and launch rendering
-            clear_temp, lgt, proc=multithread_rendering(self.filepath, self.free_core, self.clear_temp, temp_dir, instance_dir, prerender_dir, sound_dir)
+            clear_temp, lgt, proc=multithread_rendering(self.filepath, self.free_core, self.keep_temp, temp_dir, instance_dir, prerender_dir, sound_dir)
             
             bpy.context.scene.blender_edit_multithread_temp_dir=temp_dir
             bpy.context.scene.blender_edit_multithread_prerender_dir=prerender_dir
