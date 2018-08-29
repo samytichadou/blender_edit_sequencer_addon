@@ -25,7 +25,7 @@ class BlenderEditExportSequence(bpy.types.Operator, ExportHelper):
         
     @classmethod
     def poll(cls, context):
-        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None and bpy.context.scene.blender_edit_is_rendering==False
+        return bpy.context.area.type=='SEQUENCE_EDITOR' and bpy.context.scene.sequence_editor is not None and bpy.context.scene.blender_edit_is_rendering==False and bpy.data.is_saved==True
     
     def draw(self, context):
         layout = self.layout
