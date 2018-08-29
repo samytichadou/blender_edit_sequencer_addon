@@ -34,7 +34,7 @@ def multithread_rendering(filepath, free_core, clear_temp, temp_dir, instance_di
     
     #save instances
     for i in range(1, core_number+1):
-        temp_name=newname+'_temp_render_##########'
+        temp_name=newname+'_temp_render_'+str(i).zfill(10)
         scn.render.filepath=os.path.join(prerender_dir, temp_name)
         
         nstart=st+(i-1)*int_fr_per_core
@@ -57,7 +57,7 @@ def multithread_rendering(filepath, free_core, clear_temp, temp_dir, instance_di
             scn.blender_edit_multithread_is_ffmpeg=False
 
         
-        blend_name=temp_name+str(i)+'.blend'
+        blend_name=temp_name+'.blend'
         blend_path=os.path.join(instance_dir, blend_name)
         bpy.ops.wm.save_as_mainfile(filepath=blend_path)
         
