@@ -5,7 +5,7 @@ class BlenderEditToggleAudioMaster(bpy.types.Operator):
     bl_label = "Toggle Audio Playback"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
-     def execute(self, context):
+    def execute(self, context):
         scn=bpy.context.scene
         if scn.use_audio==True:
             scn.use_audio=False
@@ -21,7 +21,7 @@ class BlenderEditToggleAudioScrubbing(bpy.types.Operator):
     bl_label = "Toggle Audio Scrubbing"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
-     def execute(self, context):
+    def execute(self, context):
         scn=bpy.context.scene
         if scn.use_audio_scrub==True:
             scn.use_audio_scrub=False
@@ -29,4 +29,4 @@ class BlenderEditToggleAudioScrubbing(bpy.types.Operator):
         else:
             scn.use_audio_scrub=True
             self.report({'INFO'}, 'Audio Scrubbing On')
-        return {"FINISHED"} 
+        return {"FINISHED"}
